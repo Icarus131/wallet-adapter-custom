@@ -3,7 +3,7 @@ import { useWallet } from "@solana/wallet-adapter-react";
 const EclipseWallets = () => {
   const { select, wallets, publicKey, disconnect } = useWallet();
 
-  const supportedWalletNames = ["Salmon", "Connect by Drift", "Phantom"];
+  const supportedWalletNames = ["Salmon", "Connect by Drift",];
 
   const supportedWallets = wallets.filter((wallet) => {
     if (supportedWalletNames.includes(wallet.adapter.name)) {
