@@ -1,45 +1,43 @@
 import { useWallet } from "@solana/wallet-adapter-react";
-import { SalmonWalletAdapter } from "@solana/wallet-adapter-wallets";
-import { SnapWalletAdapter } from "@drift-labs/snap-wallet-adapter";
 
 const EclipseWallets = () => {
   const { select, wallets, publicKey, disconnect } = useWallet();
 
+  const supportedWalletNames = ["Salmon", "Connect by Drift", "Phantom"];
+
+  const supportedWallets = wallets.filter((wallet) => {
+    if (supportedWalletNames.includes(wallet.adapter.name)) {
+      if (wallet.adapter.name === "Connect by Drift") {
+        return true;
+      }
+      return wallet.readyState === "Installed";
+    }
+    return false;
+  });
+
   return !publicKey ? (
     <div>
-      {wallets.filter(
-        (wallet) =>
-          (wallet.adapter.name == "Salmon" &&
-            wallet.readyState === "Installed") ||
-          wallet.adapter.name == "Connect by Drift",
-      ).length > 0 ? (
-        wallets
-          .filter(
-            (wallet) =>
-              (wallet.adapter.name == "Salmon" &&
-                wallet.readyState === "Installed") ||
-              wallet.adapter.name == "Connect by Drift",
-          )
-          .map((wallet) => (
-            <div key={wallet.adapter.name}>
-              <button
-                className="btn btn-outline btn-accent"
-                key={wallet.adapter.name}
-                onClick={() => select(wallet.adapter.name)}
-              >
-                <img
-                  src={wallet.adapter.icon}
-                  alt={wallet.adapter.name}
-                  width="24px"
-                  height="24px"
-                ></img>
-                {wallet.adapter.name === "Connect by Drift"
-                  ? "Metamask"
-                  : wallet.adapter.name}
-              </button>
-              <div className="divider"></div>
-            </div>
-          ))
+      {supportedWallets.length > 0 ? (
+        supportedWallets.map((wallet) => (
+          <div key={wallet.adapter.name}>
+            <button
+              className="btn btn-outline btn-accent"
+              key={wallet.adapter.name}
+              onClick={() => select(wallet.adapter.name)}
+            >
+              <img
+                src={wallet.adapter.icon}
+                alt={wallet.adapter.name}
+                width="24px"
+                height="24px"
+              ></img>
+              {wallet.adapter.name === "Connect by Drift"
+                ? "MetaMask"
+                : wallet.adapter.name}
+            </button>
+            <div className="divider"></div>
+          </div>
+        ))
       ) : (
         <h2>
           No wallet found. Please download an Eclipse supported Solana wallet
