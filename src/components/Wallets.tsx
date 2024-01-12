@@ -3,17 +3,14 @@ import { useWallet } from "@solana/wallet-adapter-react";
 const EclipseWallets = () => {
   const { select, wallets, publicKey, disconnect } = useWallet();
 
-  const supportedWalletNames = ["Salmon", "Connect by Drift",];
+  const supportedWalletNames = ["Salmon", "Connect by Drift"];
 
-  const supportedWallets = wallets.filter((wallet) => {
-    if (supportedWalletNames.includes(wallet.adapter.name)) {
-      if (wallet.adapter.name === "Connect by Drift") {
-        return true;
-      }
-      return wallet.readyState === "Installed";
-    }
-    return false;
-  });
+  const supportedWallets = wallets.filter(
+    (wallet) =>
+      supportedWalletNames.includes(wallet.adapter.name) &&
+      (wallet.readyState === "Installed" ||
+        wallet.adapter.name === "Connect by Drift"),
+  );
 
   return !publicKey ? (
     <div>
@@ -39,14 +36,13 @@ const EclipseWallets = () => {
           </div>
         ))
       ) : (
-        <h2>
-          No wallet found. Please download an Eclipse supported Solana wallet
-        </h2>
+        <h2>Please install an Eclipse compatible wallet</h2>
       )}
     </div>
   ) : (
     <div>
       <h2>{publicKey.toBase58()}</h2>
+      <div className="divider"></div>
       <button className="btn btn-outline btn-accent" onClick={disconnect}>
         Disconnect wallet
       </button>
